@@ -1,9 +1,18 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
-      steps {
-        echo 'Building the code...'
+    stage('BuildTask') {
+      parallel {
+        stage('Build') {
+          steps {
+            echo 'Building the code...'
+          }
+        }
+        stage('Compile') {
+          steps {
+            bat 'javac HelloWorld.java'
+          }
+        }
       }
     }
     stage('Test') {
@@ -11,9 +20,23 @@ pipeline {
         echo 'Testing the code...'
       }
     }
-    stage('Deploy') {
+    stage('Execution') {
+      parallel {
+        stage('Deploy') {
+          steps {
+            echo 'Deployed the code..'
+          }
+        }
+        stage('Execute') {
+          steps {
+            bat 'java HelloWorld'
+          }
+        }
+      }
+    }
+    stage('Report') {
       steps {
-        echo 'Deployed the code..'
+        echo 'Completed'
       }
     }
   }
